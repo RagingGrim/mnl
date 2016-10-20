@@ -2,7 +2,7 @@
 #ifndef VVECTOR_H
 #define VVECTOR_H
 //defines
-#define VVECTOR_CHUNK_SIZE 1
+#define VVECTOR_CHUNK_SIZE 250
 
 //structures
 typedef struct vVector{
