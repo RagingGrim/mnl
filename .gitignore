@@ -1,0 +1,4 @@
+*.out
+mnl.log
+*.o
+test.c
