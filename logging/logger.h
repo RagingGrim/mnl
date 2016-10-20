@@ -8,12 +8,13 @@
 // STRUCTURES
 typedef struct logger{
 FILE *file;
-pthread_mutex_t mutex_stdOut;
-pthread_mutex_t mutex_logOut;
+pthread_mutex_t *mutex_stdOut;
+pthread_mutex_t *mutex_logOut;
 }logger;
 
 // FUNCTIONS
 logger *logger_init(const char *file);
 void logger_destroy(logger *log);
 void logIt(logger* log , const char *string);
+
 #endif
