@@ -21,16 +21,17 @@ logger *logger_init(const char *file){
 	pthread_mutex_init(&newLogger->mutex_stdOut, NULL);
 	pthread_mutex_init(&newLogger->mutex_logOut, NULL);
 
-	pthread_mutex_unlock(&newLogger->mutex_stdOut);
-	pthread_mutex_unlock(&newLogger->mutex_logOut);
 	return newLogger;
 }
 
 void logger_destroy(logger *log){
 	if( log->file ){
-		pthread_mutex_lock(&log->mutex_logOut);
+		pthread_mutex_trylock(&log->mutex_logOut);
+		pthread_mutex_unlock(&log->mutex_logOut);
 		fclose(log->file);
 	}
+	pthread_mutex_trylock(&log->mutex_stdOut);
+	pthread_mutex_unlock(&log->mutex_stdOut);
 	pthread_mutex_destroy(&log->mutex_stdOut);
 	pthread_mutex_destroy(&log->mutex_logOut);
 
