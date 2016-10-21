@@ -54,7 +54,7 @@ int recvAllFixed(size_t Socket,char *Buffer,size_t Bytes,int Flags){
 size_t BytesReceived = 0;
 ssize_t tmpReturn;
 size_t Offset = 0;
-while(1) {
+while(SOCKET_MAGIC_NUMBER) {
 		tmpReturn = recv(Socket,Buffer+Offset,Bytes,Flags);
 		if(tmpReturn == -1)
 		 	return -1;
@@ -70,7 +70,7 @@ int sendAllFixed(size_t Socket,char *Buffer,size_t Bytes,int Flags){
 size_t BytesReceived = 0;
 ssize_t tmpReturn;
 size_t Offset = 0;
-while(1) {
+while( SOCKET_MAGIC_NUMBER) {
 		tmpReturn = send(Socket,Buffer+Offset,Bytes,Flags);
 		if(tmpReturn == -1)
 		 	return -1;
