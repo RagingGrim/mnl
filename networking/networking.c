@@ -50,4 +50,35 @@
 	}
 #endif
 
+int recvAllFixed(size_t Socket,char *Buffer,size_t Bytes,int Flags){
+size_t BytesReceived = 0;
+ssize_t tmpReturn;
+size_t Offset = 0;
+while(1) {
+		tmpReturn = recv(Socket,Buffer+Offset,Bytes,Flags);
+		if(tmpReturn == -1)
+		 	return -1;
+	   	BytesReceived += tmpReturn;
+		Offset += BytesReceived;
+		if(BytesReceived >= Bytes)
+			break;
+	   }
+return BytesReceived;
+    }
+
+int sendAllFixed(size_t Socket,char *Buffer,size_t Bytes,int Flags){
+size_t BytesReceived = 0;
+ssize_t tmpReturn;
+size_t Offset = 0;
+while(1) {
+		tmpReturn = send(Socket,Buffer+Offset,Bytes,Flags);
+		if(tmpReturn == -1)
+		 	return -1;
+	   	BytesReceived += tmpReturn;
+		Offset += BytesReceived;
+		if(BytesReceived >= Bytes)
+			break;
+	   }
+return BytesReceived;
+    }
 //TODO: Define sendAllFixed/recvAllFixed.
