@@ -26,7 +26,7 @@
 		  hints.ai_flags = AI_PASSIVE;
 
 		  if( getaddrinfo(Hostname,NULL,&hints,&res) != 0)
-		      return 1;
+		      return 0;
 		  void *addr = NULL;
 
 		  struct sockaddr_in *ipv4;
@@ -46,39 +46,33 @@
 		  inet_ntop(AI_FAM,addr ,temp, 30);
 		  strcpy(strIP,(char *)(&temp));
 		  freeaddrinfo(res);
-		  return 0;
+		  return 1;
 	}
 #endif
 
-int recvAllFixed(size_t Socket,char *Buffer,size_t Bytes,int Flags){
-size_t BytesReceived = 0;
-ssize_t tmpReturn;
-size_t Offset = 0;
-while(SOCKET_MAGIC_NUMBER) {
-		tmpReturn = recv(Socket,Buffer+Offset,Bytes,Flags);
-		if(tmpReturn == -1)
-		 	return -1;
-	   	BytesReceived += tmpReturn;
-		Offset += BytesReceived;
-		if(BytesReceived >= Bytes)
-			break;
-	   }
-return BytesReceived;
-    }
+ssize_t recvAllFixed(int Socket , char *Buffer , const size_t Size , const int Flags){
+	size_t bytesLeft = Size;
+	char *buffptr = Buffer;
+	while(bytesLeft > 0){
+		ssize_t recvRet = recv(Socket, buffptr, bytesLeft, Flags);
+		if( recvRet <= 0)
+			return recvRet;
+		buffptr += recvRet;
+		bytesLeft -= recvRet;
+	}
+	return Size;
+}
 
-int sendAllFixed(size_t Socket,char *Buffer,size_t Bytes,int Flags){
-size_t BytesReceived = 0;
-ssize_t tmpReturn;
-size_t Offset = 0;
-while( SOCKET_MAGIC_NUMBER) {
-		tmpReturn = send(Socket,Buffer+Offset,Bytes,Flags);
-		if(tmpReturn == -1)
-		 	return -1;
-	   	BytesReceived += tmpReturn;
-		Offset += BytesReceived;
-		if(BytesReceived >= Bytes)
-			break;
-	   }
-return BytesReceived;
-    }
+ssize_t sendAllFixed(int Socket , char *Buffer , const size_t Size , int Flags){
+	size_t bytesLeft = Size;
+	char *buffptr = Buffer;
+	while(bytesLeft > 0){
+		ssize_t sndRet = send(Socket, buffptr, bytesLeft, Flags);
+		if( sndRet <= 0)
+			return sndRet;
+		buffptr += sndRet;
+		bytesLeft -= sndRet;
+	}
+	return Size;
+}
 //TODO: Define sendAllFixed/recvAllFixed.
