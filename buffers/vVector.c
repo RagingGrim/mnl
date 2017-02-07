@@ -1,80 +1,67 @@
-#include <stdlib.h>
-#include <string.h>
-#include "vVector.h"
+#include "../lib/vVector.h"
 
-vVector *vVector_init(){
-	vVector *new_vector = malloc(sizeof(vVector));
-	if( !new_vector )
-		goto cleanup;
-
-	new_vector->_basePointerSize = VVECTOR_CHUNK_SIZE;
-	new_vector->data = malloc(sizeof(void *) * VVECTOR_CHUNK_SIZE);
-	if( !new_vector->data )
-		goto cleanup_two;
-
-	for(size_t i = 0 ; i < VVECTOR_CHUNK_SIZE ; i++ )
-		new_vector->data[i] = NULL;
-	new_vector->size = 0;
-
-	return new_vector;
-
-	cleanup_two:
-		free(new_vector);
-	cleanup:
+p_vvector vvector_init_adv(const size_t chunkSize){
+	p_vvector newVect = malloc(sizeof(struct vvector));
+	if(!newVect) // Base structure allocation.
 		return NULL;
-}
 
-short vVector_grow(vVector *vector){
-	void **back = vector->data;
-	vector->data = realloc(vector->data, vector->_basePointerSize * 2 * sizeof(void *));
-	if( !vector->data ){
-		vector->data = back;
-		return 1;
+	newVect->chunkSize = chunkSize;
+	newVect->elements = 0;
+	newVect->data = malloc(sizeof(void *) * chunkSize);
+	if(!newVect->data){
+		free(newVect);
+		return NULL;
 	}
-	for( size_t i = vector->_basePointerSize  ; i < vector->_basePointerSize * 2 ; i++ )
-		vector->data[i] = NULL;
-	vector->_basePointerSize *= 2;
-	return 0;
+
+	return newVect;
 }
 
-short vVector_pushback(vVector *vector , void *target){
-	if(vector->size == vector->_basePointerSize){
-              short ret = vVector_grow(vector);
-              if( ret != 0 )
-                    return ret;
-        }
-
-	  vector->data[vector->size] = target;
-	  vector->size++;
-	  return 0;
+p_vvector vvector_init(){
+	return vvector_init_adv(VVECTOR_CHUNK_SIZE); // This is short ; it can be inlined.
 }
 
-void vVector_popback(vVector *vector , short delete){
-	if( vector->size > 0){
-		void *tmp = vector->data[vector->size];
-		vector->data[vector->size] = NULL;
-		vector->size--;
-		if( delete )
-			free(tmp);
-	}
-}
-
-void vVector_destroy(vVector *vector){
-	size_t i;
-	for(i = 0 ; i < vector->_basePointerSize ; i++)
-		vector->data[i] = NULL;
-
+void vvector_free(p_vvector vector){
+	vector->chunkSize = 0;
 	free(vector->data);
 	vector->data = NULL;
-
+	vector->elements = 0;
 	free(vector);
 	vector = NULL;
-
-	return;
 }
 
-void *vVector_at(vVector *vector , size_t n){
-	if(vector->size < n)
+short _vvector_grow(const p_vvector vector){
+	size_t oldSize = vector->chunkSize;
+	vector->chunkSize *= 2; // Double size
+
+	void *old_pnter = vector->data;
+	vector->data = realloc(vector->data, vector->chunkSize);
+	if(!vector){
+		vector->data = old_pnter;
+		vector->chunkSize = oldSize;
+		return VVECTORE_GROW;
+	}
+
+	return VVECTORE_OK;
+}
+
+short vvector_push(const p_vvector vector, const void *element){
+	if(vector->elements == vector->chunkSize)
+		if ( _vvector_grow(vector) != VVECTORE_OK )
+			return VVECTORE_GROW;
+
+	vector->data[vector->elements++] = (void *)element;
+	return VVECTORE_OK;
+}
+
+void *vvector_pop(const p_vvector vector){
+		void *pnter = vector->data[vector->elements - 1];
+		vector->data[vector->elements - 1] = NULL;
+		vector->elements--;
+		return pnter;
+}
+
+void *vvector_at(const p_vvector vector, const size_t i){
+	if( vector->elements < i )
 		return NULL;
-	return vector->data[n];
+	return vector->data[i];
 }
