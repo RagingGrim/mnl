@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include "../lib/controller.h"
-
+/*
+	I'll have to refactor all of this code.
+	I changed the library functions and how they work so now things are a tad more complex.
+*/
 threadController *threadController_init(){
 	threadController *tc = malloc(sizeof(threadController));
 	if( !tc )
