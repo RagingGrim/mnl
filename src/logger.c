@@ -3,7 +3,7 @@
 #include <string.h>
 #include <assert.h>
 #include <sys/errno.h>
-#include "logger.h"
+#include "../lib/logger.h"
 
 
 logger *logger_init(const char *file){
@@ -15,7 +15,7 @@ logger *logger_init(const char *file){
 		newLogger->file = fopen(file, "a");
 		newLogger->mutex_logOut = malloc(sizeof(pthread_mutex_t));
 		pthread_mutex_init(newLogger->mutex_logOut, NULL);
-		
+
 		if( !newLogger->file ){
 			free(newLogger);
 			return NULL;

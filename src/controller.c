@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "controller.h"
+#include "../lib/controller.h"
 
 threadController *threadController_init(){
 	threadController *tc = malloc(sizeof(threadController));

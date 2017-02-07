@@ -9,7 +9,7 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <sys/errno.h>
-#include "networking.h"
+#include "../lib/networking.h"
 
 #ifdef __linux__
 	short getAddrP(const char *Hostname,char *strIP,const int AI_FAM){

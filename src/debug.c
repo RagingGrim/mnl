@@ -3,7 +3,7 @@
 #ifdef __linux__
 	#include <sys/errno.h>
 #endif
-#include "debug.h"
+#include "../lib/debug.h"
 
 #ifdef __linux__
 void debugMsg( const char *msg , short critical ){

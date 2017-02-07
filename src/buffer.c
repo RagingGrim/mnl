@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "buffer.h"
+#include "../lib/buffer.h"
 
 //External functions
 Buffer *buffer_init(size_t chunkSize , short mode){
