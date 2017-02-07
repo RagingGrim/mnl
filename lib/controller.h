@@ -2,13 +2,13 @@
 #define CONTROLLER
 #include <stdio.h>
 #include <pthread.h>
-#include "../buffers/vVector.h"
+#include "../lib/vVector.h"
 // DEFINES
 
 
 // STRUCTURES
 typedef struct threadController{
-vVector *threads;
+p_vvector threads;
 }threadController;
 
 // FUNCTIONS

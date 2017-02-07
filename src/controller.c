@@ -37,7 +37,7 @@ short threadController_pushback(threadController *tc,pthread_t id){
 }
 
 void threadController_stopAll(threadController *tc){
-	for(size_t i = 0 ; i < tc->threads->size ; i++){
+	for(size_t i = 0 ; i < tc->threads->elements ; i++){
 		pthread_join(*(pthread_t *)vvector_at(tc->threads , i), NULL);
 		pthread_cancel(*(pthread_t *)vvector_at(tc->threads , i));
 	}
