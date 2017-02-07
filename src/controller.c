@@ -9,7 +9,7 @@ threadController *threadController_init(){
 	if( !tc )
 		goto cleanup;
 
-	tc->threads = vVector_init();
+	tc->threads = vvector_init();
 	if( !tc->threads )
 		goto cleanup_one;
 
@@ -22,9 +22,9 @@ threadController *threadController_init(){
 }
 
 void threadController_destroy(threadController *tc){
-	for( size_t i = 0 ; i < tc->threads->size ; i++ )
+	for( size_t i = 0 ; i < tc->threads->elements ; i++ )
 		free(tc->threads->data[i]);
-	vVector_destroy(tc->threads);
+	vvector_free(tc->threads);
 	tc->threads = NULL;
 	free(tc);
 	tc = NULL;
@@ -33,12 +33,12 @@ void threadController_destroy(threadController *tc){
 short threadController_pushback(threadController *tc,pthread_t id){
 	pthread_t *temp = malloc(sizeof(pthread_t));
 	*temp = id;
-	return vVector_pushback(tc->threads , temp);
+	return vvector_push(tc->threads , temp);
 }
 
 void threadController_stopAll(threadController *tc){
 	for(size_t i = 0 ; i < tc->threads->size ; i++){
-		pthread_join(*(pthread_t *)vVector_at(tc->threads , i), NULL);
-		pthread_cancel(*(pthread_t *)vVector_at(tc->threads , i));
+		pthread_join(*(pthread_t *)vvector_at(tc->threads , i), NULL);
+		pthread_cancel(*(pthread_t *)vvector_at(tc->threads , i));
 	}
 }
