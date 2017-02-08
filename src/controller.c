@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "../lib/controller.h"
 /*
 	I'll have to refactor all of this code.
@@ -30,7 +29,7 @@ void threadController_destroy(threadController *tc){
 	tc = NULL;
 }
 
-short threadController_pushback(threadController *tc,pthread_t id){
+short threadController_pushback(threadController *tc,const pthread_t id){
 	pthread_t *temp = malloc(sizeof(pthread_t));
 	*temp = id;
 	return vvector_push(tc->threads , temp);
@@ -38,7 +37,7 @@ short threadController_pushback(threadController *tc,pthread_t id){
 
 void threadController_stopAll(threadController *tc){
 	for(size_t i = 0 ; i < tc->threads->elements ; i++){
-		pthread_join(*(pthread_t *)vvector_at(tc->threads , i), NULL);
+		// pthread_join(*(pthread_t *)vvector_at(tc->threads , i), NULL);
 		pthread_cancel(*(pthread_t *)vvector_at(tc->threads , i));
 	}
 }
