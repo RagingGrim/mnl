@@ -29,13 +29,13 @@ void threadController_destroy(threadController *tc){
 	tc = NULL;
 }
 
-short threadController_pushback(threadController *tc,const pthread_t id){
+short threadController_pushback(const threadController *tc,const pthread_t id){
 	pthread_t *temp = malloc(sizeof(pthread_t));
 	*temp = id;
 	return vvector_push(tc->threads , temp);
 }
 
-void threadController_stopAll(threadController *tc){
+void threadController_stopAll(const threadController *tc){
 	for(size_t i = 0 ; i < tc->threads->elements ; i++){
 		// pthread_join(*(pthread_t *)vvector_at(tc->threads , i), NULL);
 		pthread_cancel(*(pthread_t *)vvector_at(tc->threads , i));

@@ -19,7 +19,7 @@ p_vvector threads;
 // FUNCTIONS
 threadController *threadController_init();
 void threadController_destroy(threadController *tc);
-short threadController_pushback(threadController *tc,const pthread_t id);
-void stopAll(threadController *tc);
-void threadController_stopAll(threadController *tc);
+short threadController_pushback(const threadController *tc,const pthread_t id);
+void stopAll(const threadController *tc);
+void threadController_stopAll(const threadController *tc);
 #endif
