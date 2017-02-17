@@ -75,4 +75,3 @@ ssize_t sendAllFixed(int Socket , char *Buffer , const size_t Size , int Flags){
 	}
 	return Size;
 }
-//TODO: Define sendAllFixed/recvAllFixed.
