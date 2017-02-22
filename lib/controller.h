@@ -7,7 +7,8 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
-#include "../lib/vVector.h"
+
+#include "../lib/vVector.h" //<<MARK IGNORE>>
 // DEFINES
 #define THREAD_SIGNAL_READY 0
 

@@ -21,5 +21,6 @@ mnl_generate_headers:
 	@echo "Generating header . . . "
 	@touch build/mnl.h
 	@printf "#ifndef MNL_H_GUARD\n#define MNL_H_GUARD\n" > build/mnl.h
-	@cat lib/*.h >> build/mnl.h
+	# Can't use * because the order in which the header is printed matters
+	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/*.h >> build/mnl.h
 	@printf "#endif" >> build/mnl.h
