@@ -55,7 +55,7 @@ short vvector_push(const p_vvector vector, const void *element){
 
 void *vvector_pop(const p_vvector vector){
 	if( vector->elements == 0 )
-		return NULL; 
+		return NULL;
 
 	void *pnter = vector->data[vector->elements - 1];
 	vector->data[vector->elements - 1] = NULL;
