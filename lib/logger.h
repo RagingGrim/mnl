@@ -7,9 +7,9 @@
 
 // STRUCTURES
 typedef struct logger{
-FILE *file;
-pthread_mutex_t *mutex_stdOut;
-pthread_mutex_t *mutex_logOut;
+	FILE *file;
+	pthread_mutex_t *mutex_stdOut;
+	pthread_mutex_t *mutex_logOut;
 }logger;
 
 // FUNCTIONS
