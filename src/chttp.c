@@ -145,6 +145,10 @@ const char *_chttp_find(const char *buffer, const size_t bufferSize, const char 
 				if(buffer[i] == find[j]){
 					correct++;
 				}
+				else{
+					break;
+					correct = 0; // Redundant?
+				}
 				i++;
 			}
 			if(correct == findSize)
