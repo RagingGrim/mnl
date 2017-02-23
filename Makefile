@@ -22,5 +22,15 @@ mnl_generate_headers:
 	@touch build/mnl.h
 	@printf "#ifndef MNL_H_GUARD\n#define MNL_H_GUARD\n" > build/mnl.h
 	# Can't use * because the order in which the header is printed matters
-	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/*.h >> build/mnl.h
+	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/buffer.h >> build/mnl.h
+	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/vVector.h >> build/mnl.h
+	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/debug.h >> build/mnl.h
+	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/networking.h >> build/mnl.h
+	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/controller.h >> build/mnl.h
+	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/chttp.h >> build/mnl.h
+
+
+
+
+
 	@printf "#endif" >> build/mnl.h
