@@ -1,29 +1,14 @@
 #ifndef CIRCULAR_LIST_H
 #define CIRCULAR_LIST_H
 // INCLUDES
-#include <stdlib.h>
+#include "../lib/vVector.h" //<<MARK IGNORE>>
 // DEFINES
 
-// STRUCTURES
-typedef struct node{
-	void *elem;
-	struct node *next;
-}node, *p_node;
+#define p_circularList p_vvector	// Circular lists are in essence just vvectors.
+#define circularList vvector		// TODO: This is temporary and should be fixed in before release 2.
+#define circularList_free vvector_free
+#define circularList_init vvector_init
 
-typedef struct cl{
-	p_node tail;
-}circularList, *p_circularList;
-// FUNCTIONS ( NODE )
-p_node node_init();
-p_node node_init_adv(const void *elem);
-void node_free(p_node node);
-
-// FUNCTION ( CIRCULAR LIST )
-p_circularList circularList_init();
-void circularList_free(p_circularList cl);
-short circularList_insertHead(const p_circularList cl, const p_node node);
-void circularList_deleteTail(const p_circularList cl);
-const p_node circularList_at(const p_circularList cl, const size_t size);
-const size_t circularList_getSize(const p_circularList cl);
-
+short circularList_enqueue(p_circularList cl, const void *pnter);
+void *circularList_dequeue(p_circularList cl);
 #endif

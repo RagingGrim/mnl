@@ -26,6 +26,7 @@ void vvector_free(p_vvector vector);
 short _vvector_grow(const p_vvector vector); // _because it's an internal function.
 short vvector_push(const p_vvector vector, const void *element);
 void *vvector_pop(const p_vvector vector);
+void *vvector_pop_bottom(const p_vvector vector);
 void *vvector_at(const p_vvector vector, const size_t i);
 
 

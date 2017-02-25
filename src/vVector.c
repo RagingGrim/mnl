@@ -68,3 +68,15 @@ void *vvector_at(const p_vvector vector, const size_t i){
 		return NULL;
 	return vector->data[i];
 }
+
+void *vvector_pop_bottom(const p_vvector vector){
+	void *pnter = vvector_at(vector, 0);
+	if(!pnter)
+		return NULL;
+
+	for(size_t i = 0 ; i < vector->elements ; i++)
+		vector->data[i] = vector->data[i+1];
+	vector->elements--;
+
+	return pnter;
+}

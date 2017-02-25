@@ -15,6 +15,7 @@ mnl_compile:
 	$(CC) -c src/logger.c -o build/logger.o
 	$(CC) -c src/networking.c -o build/networking.o
 	$(CC) -c src/vVector.c -o build/vVector.o
+	$(CC) -c src/circularList.c -o build/circularList.o
 	$(CC) -c src/chttp.c -o build/chttp.o
 
 mnl_generate_headers:
@@ -24,13 +25,13 @@ mnl_generate_headers:
 	# Can't use * because the order in which the header is printed matters
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/buffer.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/vVector.h >> build/mnl.h
+	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/circularList.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/debug.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/networking.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/controller.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/chttp.h >> build/mnl.h
 
-
-
-
-
 	@printf "#endif" >> build/mnl.h
+
+mnl_debug:
+	clang build/main.c build/mnl.a -ggdb -lm -lpthread -o build/a.out
