@@ -84,17 +84,22 @@ void threadController_destroy(threadController *tc){
 	tc = NULL;
 }
 
-short threadController_pushback(const threadController *tc,const pthread_t id){
-	short ret = vvector_push(tc->threads, &id);
-	if( ret != VVECTORE_OK)
+short threadController_pushback(const threadController *tc,void *(* routine)(void *), void *data){
+	p_threadQueue tq = threadQueue_init();
+	if(!tq)
 		return VVECTORE_GROW;
 
-	p_threadQueue tq = threadQueue_init();
-	if(!tq){
-		vvector_pop(tc->threads);
+	pthread_t id;
+	if( pthread_create(&id, NULL, routine, data) != 0 ){
+		threadQueue_free(tq);
 		return VVECTORE_GROW;
 	}
 
+
+
+	short ret = vvector_push(tc->threads, &id);
+	if( ret != VVECTORE_OK)
+		return VVECTORE_GROW;
 
 	ret = vvector_push(tc->threadQueues, tq);
 	if(ret != VVECTORE_OK){

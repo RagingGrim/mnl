@@ -33,7 +33,7 @@ typedef struct threadInfo{
 // FUNCTIONS (THREAD CONTROLLER)
 threadController *threadController_init();
 void threadController_destroy(threadController *tc);
-short threadController_pushback(const threadController *tc,const pthread_t id);
+short threadController_pushback(const threadController *tc,void *(* routine)(void *), void *data);
 void threadController_stopAll(const threadController *tc);
 
 // FUNCTIONS (THREAD QUEUES)
