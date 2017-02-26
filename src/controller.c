@@ -78,6 +78,11 @@ threadController *threadController_init(){
 void threadController_destroy(threadController *tc){
 	for(size_t i = 0 ; i < tc->threadQueues->elements ; i++)
 		threadQueue_free(tc->threadQueues->data[i]);
+
+	for(size_t i = 0 ; i < tc->threads->elements ; i++)
+		free(vvector_at(tc->threads, i));
+
+
 	vvector_free(tc->threadQueues);
 	vvector_free(tc->threads);
 	free(tc);
@@ -89,15 +94,25 @@ short threadController_pushback(const threadController *tc,void *(* routine)(voi
 	if(!tq)
 		return VVECTORE_GROW;
 
-	pthread_t id;
-	if( pthread_create(&id, NULL, routine, data) != 0 ){
+	pthread_t *id = malloc(sizeof(pthread_t));
+	if(!id){
 		threadQueue_free(tq);
 		return VVECTORE_GROW;
 	}
 
 
+	if( pthread_create(id, NULL, routine, data) != 0 ){
+		threadQueue_free(tq);
+		return VVECTORE_GROW;
+	}
+	else{
+		pthread_join(*id, NULL);
+	}
 
-	short ret = vvector_push(tc->threads, &id);
+
+	//TODO: Remember to fix error handling here ( aka , stop the thread if it has been started and an error occurs during the push.
+
+	short ret = vvector_push(tc->threads, id);
 	if( ret != VVECTORE_OK)
 		return VVECTORE_GROW;
 
