@@ -31,7 +31,7 @@ mnl_generate_headers:
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/controller.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/chttp.h >> build/mnl.h
 
-	@printf "#endif" >> build/mnl.h
+	@printf "#endif\n" >> build/mnl.h
 
 mnl_debug:
 	clang build/main.c build/mnl.a -ggdb -lm -lpthread -o build/a.out
