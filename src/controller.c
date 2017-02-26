@@ -3,68 +3,13 @@
 	I'll have to refactor all of this code.
 	I changed the library functions and how they work so now things are a tad more complex.
 */
-threadController *threadController_init(){
-	threadController *tc = malloc(sizeof(threadController));
-	if( !tc )
-		goto cleanup;
-
-	tc->threads = vvector_init();
-	if( !tc->threads )
-		goto cleanup_one;
 
 
-	return tc;
-
-	cleanup_one:
-		free(tc);
-	cleanup:
-		return NULL;
-}
-
-void threadController_destroy(threadController *tc){
-	for( size_t i = 0 ; i < tc->threads->elements ; i++ )
-		free(tc->threads->data[i]);
-
-
-	vvector_free(tc->threads);
-	tc->threads = NULL;
-
-	free(tc);
-	tc = NULL;
-}
-
-short threadController_pushback(const threadController *tc,const pthread_t id){
-	pthread_t *temp = malloc(sizeof(pthread_t));
-	if(!temp)
-		return VVECTORE_GROW;
-	*temp = id;
-
-	p_vvector vector = vvector_init();
-	if( !vector ){
-		free(temp);
-		return VVECTORE_GROW;
-	}
-
-	return vvector_push(tc->threads , temp);
-}
-
-void threadController_stopAll(const threadController *tc){
-	for(size_t i = 0 ; i < tc->threads->elements ; i++){
-		// pthread_join(*(pthread_t *)vvector_at(tc->threads , i), NULL);
-		pthread_cancel(*(pthread_t *)vvector_at(tc->threads , i));
-	}
-}
-
+// Thread Queue
 p_threadQueue threadQueue_init(){
 	p_threadQueue tq = malloc(sizeof(threadQueue));
 	if(!tq)
 		return NULL;
-
-	tq->queue = circularList_init();
-	if(!tq->queue){
-		free(tq);
-		return NULL;
-	}
 
 	tq->mutex = malloc(sizeof(pthread_mutex_t));
 	if(!tq->mutex){
@@ -72,13 +17,19 @@ p_threadQueue threadQueue_init(){
 		tq = NULL;
 		return NULL;
 	}
-
 	pthread_mutex_init(tq->mutex, NULL);
 
+	tq->queue = vvector_init();
+	if(!tq->queue){
+		pthread_mutex_destroy(tq->mutex);
+		free(tq->mutex);
+		free(tq);
+		tq = NULL;
+		return NULL;
+	}
 	return tq;
 }
 
-// Thread Queue
 void threadQueue_free(p_threadQueue tq){
 	pthread_mutex_destroy(tq->mutex);
 	free(tq->mutex);
@@ -101,6 +52,68 @@ void *threadQueue_dequeue(const p_threadQueue tq){
 	pthread_mutex_unlock(tq->mutex);
 	return data;
 }
+
+// Thread Controller
+threadController *threadController_init(){
+	p_threadController tc = malloc(sizeof(threadController));
+	if(!tc)
+		return NULL;
+
+	tc->threadQueues = vvector_init();
+	if(!tc->threadQueues){
+		free(tc);
+		return NULL;
+	}
+
+	tc->threads = vvector_init();
+	if(!tc->threads){
+		vvector_free(tc->threadQueues);
+		free(tc);
+		return NULL;
+	}
+
+	return tc;
+}
+
+void threadController_destroy(threadController *tc){
+	for(size_t i = 0 ; i < tc->threadQueues->elements ; i++)
+		threadQueue_free(tc->threadQueues->data[i]);
+	vvector_free(tc->threadQueues);
+	vvector_free(tc->threads);
+	free(tc);
+	tc = NULL;
+}
+
+short threadController_pushback(const threadController *tc,const pthread_t id){
+	short ret = vvector_push(tc->threads, &id);
+	if( ret != VVECTORE_OK)
+		return VVECTORE_GROW;
+
+	p_threadQueue tq = threadQueue_init();
+	if(!tq){
+		vvector_pop(tc->threads);
+		return VVECTORE_GROW;
+	}
+
+
+	ret = vvector_push(tc->threadQueues, tq);
+	if(ret != VVECTORE_OK){
+		vvector_pop(tc->threads);
+		threadQueue_free(tq);
+		return VVECTORE_GROW;
+	}
+
+	return VVECTORE_OK;
+}
+
+void threadController_stopAll(const threadController *tc){
+	for(size_t i = 0 ; i < tc->threads->elements ; i++){
+		// pthread_join(*(pthread_t *)vvector_at(tc->threads , i), NULL);
+		pthread_cancel(*(pthread_t *)vvector_at(tc->threads , i));
+	}
+}
+
+
 
 // Thread Info
 p_threadInfo threadInfo_init(){
