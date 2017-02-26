@@ -27,6 +27,7 @@ mnl_generate_headers:
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/vVector.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/circularList.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/debug.h >> build/mnl.h
+	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/logger.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/networking.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/controller.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/chttp.h >> build/mnl.h
