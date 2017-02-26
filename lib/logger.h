@@ -10,7 +10,7 @@ typedef struct logger{
 	FILE *file;
 	pthread_mutex_t *mutex_stdOut;
 	pthread_mutex_t *mutex_logOut;
-}logger;
+}logger, *p_logger;
 
 // FUNCTIONS
 logger *logger_init(const char *file);
