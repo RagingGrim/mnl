@@ -65,94 +65,23 @@ void *threadQueue_dequeue(const p_threadQueue tq){
 
 // Thread Controller
 threadController *threadController_init(){
-	p_threadController tc = malloc(sizeof(threadController));
-	if(!tc)
-		return NULL;
 
-	tc->threadQueues = vvector_init();
-	if(!tc->threadQueues){
-		free(tc);
-		return NULL;
-	}
-
-	tc->threads = vvector_init();
-	if(!tc->threads){
-		vvector_free(tc->threadQueues);
-		free(tc);
-		return NULL;
-	}
-
-	return tc;
 }
 
 void threadController_destroy(threadController *tc){
-	for(size_t i = 0 ; i < tc->threadQueues->elements ; i++)
-		threadQueue_free(tc->threadQueues->data[i]);
 
-	for(size_t i = 0 ; i < tc->threads->elements ; i++)
-		free(vvector_at(tc->threads, i));
-
-
-	vvector_free(tc->threadQueues);
-	vvector_free(tc->threads);
-	free(tc);
-	tc = NULL;
 }
 
 short threadController_pushback(const threadController *tc,void *(* routine)(void *), void *data){
-	p_threadInfo ti = threadInfo_init();
 
-	if(!ti)
-		return VVECTORE_GROW;
-
-	pthread_t *id = malloc(sizeof(pthread_t));
-	if(!id){
-		threadInfo_free(ti);
-		return VVECTORE_GROW;
-	}
-
-	if( pthread_create(id, NULL, routine, ti) != 0 ){
-		threadInfo_free(ti);
-		return VVECTORE_GROW;
-	}
-	else
-		pthread_join(*id, NULL);
-
-
-
-	//TODO: Remember to fix error handling here ( aka , stop the thread if it has been started and an error occurs during the push.
-	short ret = vvector_push(tc->threads, id);
-	if( ret != VVECTORE_OK)
-		return VVECTORE_GROW;
-
-	ret = vvector_push(tc->threadQueues, ti->queue);
-
-
-	if(ret != VVECTORE_OK){
-		vvector_pop(tc->threads);
-		threadInfo_free(ti);
-		return VVECTORE_GROW;
-	}
-
-	return VVECTORE_OK;
 }
 
 short threadController_messsage(const threadController *tc, const size_t at, void *msg){
-	void *data = vvector_at(tc->threads, at);
-	if(data){
-		p_threadQueue tq = vvector_at(tc->threadQueues, at); // Should never have to check this return value
-		if(tq){
-			return threadQueue_enqueue(tq, msg);
-		}
-	}
-	return VVECTORE_GROW;
+	
 }
 
 void threadController_stopAll(const threadController *tc){
-	for(size_t i = 0 ; i < tc->threads->elements ; i++){
-		// pthread_join(*(pthread_t *)vvector_at(tc->threads , i), NULL);
-		pthread_cancel(*(pthread_t *)vvector_at(tc->threads , i));
-	}
+
 }
 
 
