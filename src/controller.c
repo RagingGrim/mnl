@@ -40,10 +40,11 @@ void threadQueue_free(p_threadQueue tq){
 	tq = NULL;
 }
 
-void threadQueue_enqueue(const p_threadQueue tq, const void *data){
+short threadQueue_enqueue(const p_threadQueue tq, const void *data){
 	pthread_mutex_lock(tq->mutex);
-	circularList_enqueue(tq->queue, data);
+	short val = circularList_enqueue(tq->queue, data);
 	pthread_mutex_unlock(tq->mutex);
+	return val;
 }
 
 void *threadQueue_dequeue(const p_threadQueue tq){
@@ -100,8 +101,18 @@ short threadController_pushback(const threadController *tc,void *(* routine)(voi
 		return VVECTORE_GROW;
 	}
 
+	//TODO: Make sure to pass the threads queue to the actual thread.
+	p_threadInfo ti = threadInfo_init_no_queue();
+	ti->queue = tq;
+	ti->reserved = data;
 
-	if( pthread_create(id, NULL, routine, data) != 0 ){
+	if(!ti){
+		free(id);
+		threadQueue_free(tq);
+		return VVECTORE_GROW;
+	}
+
+	if( pthread_create(id, NULL, routine, ti) != 0 ){
 		threadQueue_free(tq);
 		return VVECTORE_GROW;
 	}
@@ -126,6 +137,17 @@ short threadController_pushback(const threadController *tc,void *(* routine)(voi
 	return VVECTORE_OK;
 }
 
+short threadController_messsage(const threadController *tc, const size_t at, void *msg){
+	void *data = vvector_at(tc->threads, at);
+	if(data){
+		p_threadQueue tq = vvector_at(tc->threadQueues, at); // Should never have to check this return value
+		if(tq){
+			return threadQueue_enqueue(tq, msg);
+		}
+	}
+	return VVECTORE_GROW;
+}
+
 void threadController_stopAll(const threadController *tc){
 	for(size_t i = 0 ; i < tc->threads->elements ; i++){
 		// pthread_join(*(pthread_t *)vvector_at(tc->threads , i), NULL);
@@ -136,6 +158,23 @@ void threadController_stopAll(const threadController *tc){
 
 
 // Thread Info
+p_threadInfo threadInfo_init_no_queue(){
+	p_threadInfo ti = malloc(sizeof(threadInfo));
+	if(!ti)
+		return NULL;
+
+	ti->queue = NULL;
+	ti->reserved = NULL;
+	return ti;
+}
+
+void threadInfo_free_no_queue(p_threadInfo ti){
+	ti->reserved = NULL;
+	free(ti);
+	ti = NULL;
+}
+
+
 p_threadInfo threadInfo_init(){
 	p_threadInfo ti = malloc(sizeof(threadInfo));
 	if(!ti)
@@ -148,24 +187,18 @@ p_threadInfo threadInfo_init(){
 		return NULL;
 	}
 
-	ti->reserved = vvector_init();
-	if(!ti->reserved){
-		threadQueue_free(ti->queue);
-		free(ti);
-		return NULL;
-	}
+	ti->reserved = NULL;
 	return ti;
 }
 
 void threadInfo_free(p_threadInfo ti){
 	threadQueue_free(ti->queue);
-	vvector_free(ti->reserved);
 	free(ti);
 	ti = NULL;
 }
 
-void threadInfo_enqueue(const p_threadInfo tq, const void *data){
-	threadQueue_enqueue(tq->queue, data);
+short threadInfo_enqueue(const p_threadInfo tq, const void *data){
+	return threadQueue_enqueue(tq->queue, data);
 }
 
 void *threadInfo_dequeue(const p_threadInfo tq){

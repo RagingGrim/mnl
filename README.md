@@ -8,3 +8,34 @@ gcc main.c mnl.a
 ````
 
 I will manually generate the single header for the library everytime.
+
+
+
+## Controllers
+The library exposes a thread controller which can be used to communicate between server and master threads.
+
+A controller is initialised by:
+
+```C
+p_threadController tc = threadController_init();
+```
+___
+Creating a thread which starts on function hello:
+```C
+void *Hello(void *data){
+	//Do stuff
+
+	threadInfo_free_no_queue(data);
+}
+
+threadController_pushback(tc, Hello, NULL);
+```
+
+### Note that:
+	* threadInfo_free_no_queue must be used inside child threads; The master thread handles memory cleanup.
+___
+
+To clean up memory used by the controller:
+```C
+	threadController_destroy(tc);
+```
