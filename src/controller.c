@@ -11,13 +11,20 @@ p_threadQueue threadQueue_init(){
 	if(!tq)
 		return NULL;
 
+	tq->mutex = NULL;
 	tq->mutex = malloc(sizeof(pthread_mutex_t));
+
 	if(!tq->mutex){
 		free(tq);
 		tq = NULL;
 		return NULL;
 	}
-	pthread_mutex_init(tq->mutex, NULL);
+
+	if(pthread_mutex_init(tq->mutex, NULL) != 0){
+		free(tq);
+		tq = NULL;
+		return NULL;
+	}
 
 	tq->queue = vvector_init();
 	if(!tq->queue){
@@ -49,6 +56,8 @@ short threadQueue_enqueue(const p_threadQueue tq, const void *data){
 
 void *threadQueue_dequeue(const p_threadQueue tq){
 	pthread_mutex_lock(tq->mutex);
+	if(tq->queue->elements == 0)
+		return NULL;
 	void *data = circularList_dequeue(tq->queue);
 	pthread_mutex_unlock(tq->mutex);
 	return data;
@@ -91,46 +100,37 @@ void threadController_destroy(threadController *tc){
 }
 
 short threadController_pushback(const threadController *tc,void *(* routine)(void *), void *data){
-	p_threadQueue tq = threadQueue_init();
-	if(!tq)
+	p_threadInfo ti = threadInfo_init();
+
+	if(!ti)
 		return VVECTORE_GROW;
 
 	pthread_t *id = malloc(sizeof(pthread_t));
 	if(!id){
-		threadQueue_free(tq);
-		return VVECTORE_GROW;
-	}
-
-	//TODO: Make sure to pass the threads queue to the actual thread.
-	p_threadInfo ti = threadInfo_init_no_queue();
-	ti->queue = tq;
-	ti->reserved = data;
-
-	if(!ti){
-		free(id);
-		threadQueue_free(tq);
+		threadInfo_free(ti);
 		return VVECTORE_GROW;
 	}
 
 	if( pthread_create(id, NULL, routine, ti) != 0 ){
-		threadQueue_free(tq);
+		threadInfo_free(ti);
 		return VVECTORE_GROW;
 	}
-	else{
+	else
 		pthread_join(*id, NULL);
-	}
+
 
 
 	//TODO: Remember to fix error handling here ( aka , stop the thread if it has been started and an error occurs during the push.
-
 	short ret = vvector_push(tc->threads, id);
 	if( ret != VVECTORE_OK)
 		return VVECTORE_GROW;
 
-	ret = vvector_push(tc->threadQueues, tq);
+	ret = vvector_push(tc->threadQueues, ti->queue);
+
+
 	if(ret != VVECTORE_OK){
 		vvector_pop(tc->threads);
-		threadQueue_free(tq);
+		threadInfo_free(ti);
 		return VVECTORE_GROW;
 	}
 
