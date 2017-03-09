@@ -65,19 +65,84 @@ void *threadQueue_dequeue(const p_threadQueue tq){
 
 // Thread Controller
 threadController *threadController_init(){
+	p_threadController tc = malloc(sizeof(threadController));
+	if(!tc)
+		return NULL;
 
+	tc->threads = vvector_init_adv(25); // 250 bytes is excessive for structures representing a thread.
+	if(!tc->threads)
+		free(tc);
+
+	tc->threadQueues = vvector_init_adv(25);
+	if(!tc->threadQueues){
+		vvector_free(tc->threads);
+		free(tc);
+	}
+	return tc;
 }
 
 void threadController_destroy(threadController *tc){
+	void *someData;
 
+	do{
+		someData = vvector_pop(tc->threadQueues);
+		if(someData){
+			void *id = vvector_pop(tc->threads);
+			pthread_join(*(pthread_t *)id, NULL);
+			free(id);
+		}
+
+
+	}while(someData);
+
+	vvector_free(tc->threads);
+	vvector_free(tc->threadQueues);
+	free(tc);
 }
 
 short threadController_pushback(const threadController *tc,void *(* routine)(void *), void *data){
+	pthread_t *id = malloc(sizeof(pthread_t));
+	if(!id)
+		return VVECTORE_GROW;
 
+	if(vvector_push(tc->threads, id) != VVECTORE_OK){
+		free(id);
+		return VVECTORE_GROW;
+	}
+
+	p_threadQueue tq = threadQueue_init();
+	if(!tq){
+		free(vvector_pop(tc->threads));
+		return VVECTORE_GROW;
+	}
+
+	if(vvector_push(tc->threadQueues, tq) != VVECTORE_OK){
+		free(vvector_pop(tc->threads));
+		threadQueue_free(tq);
+		return VVECTORE_GROW;
+	}
+
+	p_threadInfo ti = threadInfo_init_no_queue();
+	if(!ti){
+		threadQueue_free(vvector_pop(tc->threadQueues));
+		free(vvector_pop(tc->threads));
+		return VVECTORE_GROW;
+	}
+
+	ti->queue =  tq;
+	ti->reserved = data;
+
+	if(pthread_create(id, NULL, routine, ti) != 0){
+		threadQueue_free(vvector_pop(tc->threadQueues));
+		free(vvector_pop(tc->threads));
+		return VVECTORE_GROW;
+	}
+
+	return VVECTORE_OK;
 }
 
 short threadController_messsage(const threadController *tc, const size_t at, void *msg){
-	
+	return threadQueue_enqueue(vvector_at(tc->threadQueues, at), msg);
 }
 
 void threadController_stopAll(const threadController *tc){
