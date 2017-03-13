@@ -31,9 +31,6 @@ void *Hello(void *data){
 threadController_pushback(tc, Hello, NULL);
 ```
 
-### Note that:
-	* threadInfo_free_no_queue must be used inside child threads; The master thread handles memory cleanup.
-___
 
 To clean up memory used by the controller:
 ```C
