@@ -100,6 +100,13 @@ void threadController_destroy(threadController *tc){
 	free(tc);
 }
 
+void *threadController_trampoline(void *data){
+	p_threadInfo ti = data;
+	ti->routine(data);
+	threadInfo_free(ti);
+	return NULL;
+}
+
 short threadController_pushback(const threadController *tc,void *(* routine)(void *), void *data){
 	pthread_t *id = malloc(sizeof(pthread_t));
 	if(!id)
@@ -131,8 +138,9 @@ short threadController_pushback(const threadController *tc,void *(* routine)(voi
 
 	ti->queue =  tq;
 	ti->reserved = data;
+	ti->routine = routine;
 
-	if(pthread_create(id, NULL, routine, ti) != 0){
+	if(pthread_create(id, NULL, threadController_trampoline, ti) != 0){
 		threadQueue_free(vvector_pop(tc->threadQueues));
 		free(vvector_pop(tc->threads));
 		return VVECTORE_GROW;

@@ -27,6 +27,7 @@ typedef struct threadController{
 
 typedef struct threadInfo{
 	p_threadQueue queue;
+	void *(* routine)(void *);
 	void *reserved;
 }threadInfo, *p_threadInfo;
 
