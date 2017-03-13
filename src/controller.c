@@ -146,7 +146,8 @@ short threadController_messsage(const threadController *tc, const size_t at, voi
 }
 
 void threadController_stopAll(const threadController *tc){
-
+	for(size_t i = 0 ; i < tc->threads->elements ; i++)
+		pthread_cancel(*(pthread_t *)vvector_at(tc->threads , i));
 }
 
 
