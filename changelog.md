@@ -10,3 +10,7 @@
 </li> 
 <li> <a href="http://github.com/RagingGrim/mnl/commit/1c251dc2b596ed70cb7932d7061435209a29f5b0">Copied old threadController_stopAll implementation.</a>
 </li> 
+<li> <a href="http://github.com/RagingGrim/mnl/commit/d88c2d914ed7b6ccd105008d6415fc87ad8a860b">Update changelog.</a>
+</li> 
+<li> <a href="http://github.com/RagingGrim/mnl/commit/c1472ef55001234e54215dd9336d70b57840d647">Added trampoline function so cleanup by user is not required.</a>
+</li> 
