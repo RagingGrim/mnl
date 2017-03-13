@@ -6,3 +6,7 @@
 </li> 
 <li> <a href="http://github.com/RagingGrim/mnl/commit/b4acdc4ed19a2579650bf0b47331f5709a1ca15d">This is not a stable release; Thread errors are still created.</a>
 </li> 
+<li> <a href="http://github.com/RagingGrim/mnl/commit/369d202696517555609d3bf1235f3db96c5a8c82">Testing new changelog.</a>
+</li> 
+<li> <a href="http://github.com/RagingGrim/mnl/commit/1c251dc2b596ed70cb7932d7061435209a29f5b0">Copied old threadController_stopAll implementation.</a>
+</li> 
