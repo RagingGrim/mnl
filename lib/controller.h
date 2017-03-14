@@ -23,10 +23,12 @@ typedef struct threadQueue{
 typedef struct threadController{
 	p_vvector threads;
 	p_vvector threadQueues;
+	p_threadQueue controllerQueue;
 }threadController , *p_threadController;
 
 typedef struct threadInfo{
 	p_threadQueue queue;
+	p_threadQueue controllerQueue;
 	void *(* routine)(void *);
 	void *reserved;
 }threadInfo, *p_threadInfo;

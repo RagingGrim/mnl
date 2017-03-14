@@ -34,6 +34,7 @@ p_threadQueue threadQueue_init(){
 		tq = NULL;
 		return NULL;
 	}
+
 	return tq;
 }
 
@@ -70,14 +71,26 @@ threadController *threadController_init(){
 		return NULL;
 
 	tc->threads = vvector_init_adv(25); // 250 bytes is excessive for structures representing a thread.
-	if(!tc->threads)
+	if(!tc->threads){
 		free(tc);
+		return NULL;
+	}
 
 	tc->threadQueues = vvector_init_adv(25);
 	if(!tc->threadQueues){
 		vvector_free(tc->threads);
 		free(tc);
+		return NULL;
 	}
+
+	tc->controllerQueue = threadQueue_init();
+	if(!tc->controllerQueue){
+		vvector_free(tc->threadQueues);
+		vvector_free(tc->threads);
+		free(tc);
+		return NULL;
+	}
+
 	return tc;
 }
 
@@ -97,6 +110,7 @@ void threadController_destroy(threadController *tc){
 
 	vvector_free(tc->threads);
 	vvector_free(tc->threadQueues);
+	threadQueue_free(tc->controllerQueue);
 	free(tc);
 }
 
@@ -139,6 +153,7 @@ short threadController_pushback(const threadController *tc,void *(* routine)(voi
 	ti->queue =  tq;
 	ti->reserved = data;
 	ti->routine = routine;
+	ti->controllerQueue = tc->controllerQueue;
 
 	if(pthread_create(id, NULL, threadController_trampoline, ti) != 0){
 		threadQueue_free(vvector_pop(tc->threadQueues));
