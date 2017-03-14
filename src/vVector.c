@@ -34,7 +34,7 @@ short _vvector_grow(const p_vvector vector){
 	vector->chunkSize *= 2; // Double size
 
 	void *old_pnter = vector->data;
-	vector->data = realloc(vector->data, vector->chunkSize);
+	vector->data = realloc(vector->data, sizeof(void *) * vector->chunkSize);
 	if(!vector->data){
 		vector->data = old_pnter;
 		vector->chunkSize = oldSize;

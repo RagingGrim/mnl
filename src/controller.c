@@ -70,13 +70,13 @@ threadController *threadController_init(){
 	if(!tc)
 		return NULL;
 
-	tc->threads = vvector_init_adv(25); // 250 bytes is excessive for structures representing a thread.
+	tc->threads = vvector_init();
 	if(!tc->threads){
 		free(tc);
 		return NULL;
 	}
 
-	tc->threadQueues = vvector_init_adv(25);
+	tc->threadQueues = vvector_init();
 	if(!tc->threadQueues){
 		vvector_free(tc->threads);
 		free(tc);

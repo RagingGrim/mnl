@@ -24,8 +24,6 @@ Creating a thread which starts on function hello:
 ```C
 void *Hello(void *data){
 	//Do stuff
-
-	threadInfo_free_no_queue(data);
 }
 
 threadController_pushback(tc, Hello, NULL);

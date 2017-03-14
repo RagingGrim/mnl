@@ -54,6 +54,4 @@ void threadInfo_free_no_queue(p_threadInfo ti);
 short threadInfo_enqueue(const p_threadInfo tq, const void *data);
 void *threadInfo_dequeue(const p_threadInfo tq);
 
-
-
-#endif
+#endif		//TODO: Implement an advanced pushback function to set the stack size.
