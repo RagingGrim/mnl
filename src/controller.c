@@ -1,4 +1,5 @@
 #include "../lib/controller.h"
+#include <stdlib.h> //TODO: REMOVE
 /*
 	I'll have to refactor all of this code.
 	I changed the library functions and how they work so now things are a tad more complex.
@@ -57,8 +58,10 @@ short threadQueue_enqueue(const p_threadQueue tq, const void *data){
 
 void *threadQueue_dequeue(const p_threadQueue tq){
 	pthread_mutex_lock(tq->mutex);
-	if(tq->queue->elements == 0)
+	if(tq->queue->elements == 0){
+		pthread_mutex_unlock(tq->mutex);
 		return NULL;
+	}
 	void *data = circularList_dequeue(tq->queue);
 	pthread_mutex_unlock(tq->mutex);
 	return data;

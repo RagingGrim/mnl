@@ -1,5 +1,4 @@
 #include "../lib/vVector.h"
-
 p_vvector vvector_init_adv(const size_t chunkSize){
 	p_vvector newVect = malloc(sizeof(struct vvector));
 	if(!newVect) // Base structure allocation.
@@ -73,6 +72,8 @@ void *vvector_pop_bottom(const p_vvector vector){
 	void *pnter = vvector_at(vector, 0);
 	if(!pnter)
 		return NULL;
+
+
 
 	for(size_t i = 0 ; i < vector->elements ; i++)
 		vector->data[i] = vector->data[i+1];
