@@ -36,4 +36,6 @@ ssize_t recvAllFixed(int Socket , char *Buffer , const size_t Size , const int F
  * @return        The amount of bytes returned / or -1 for an error
  */
 ssize_t sendAllFixed(int Socket , char *Buffer , const size_t Size , int Flags);
+
+char *get_ip_str(const struct sockaddr *sa, char *s, size_t maxlen);
 #endif
