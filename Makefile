@@ -17,6 +17,7 @@ mnl_compile:
 	$(CC) -c src/vVector.c -o build/vVector.o
 	$(CC) -c src/circularList.c -o build/circularList.o
 	$(CC) -c src/chttp.c -o build/chttp.o
+	$(CC) -c src/map.c -o build/map.o
 
 mnl_generate_headers:
 	@echo "Generating header . . . "
@@ -31,8 +32,14 @@ mnl_generate_headers:
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/networking.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/controller.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/chttp.h >> build/mnl.h
+	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/map.h >> build/mnl.h
 
 	@printf "#endif\n" >> build/mnl.h
 
 mnl_debug:
 	clang build/main.c build/mnl.a -ggdb -lm -lpthread -o build/a.out
+
+
+package: mnl
+	tar -czvf ./build/mnl.tar.gz ./build/mnl.h ./build/mnl.a
+	
