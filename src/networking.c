@@ -22,15 +22,33 @@ char *get_ip_str(const struct sockaddr *sa, char *s, size_t maxlen){
             inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr),
                     s, maxlen);
             break;
-
-        default:
-            strncpy(s, "Unknown AF", maxlen);
-            return NULL;
     }
 
     return s;
 }
 
+char *getPeerAddr(const struct sockaddr *sa, socklen_t maxlen){
+	char *buffer = malloc(maxlen + 1);
+	if(!buffer)
+		return NULL;
+
+	switch(sa->sa_family) {
+		case AF_INET:{
+			inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), buffer,maxlen);
+			break;
+		}
+		case AF_INET6:{
+			inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr),buffer, maxlen);
+			break;
+ 	    }
+	    default:{
+		    inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), buffer,maxlen);
+		    break;
+	    }
+    }
+
+	return buffer;
+}
 
 #ifdef __linux__
 	short getAddrP(const char *Hostname,char *strIP,const int AI_FAM){
