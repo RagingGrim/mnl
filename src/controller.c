@@ -225,3 +225,69 @@ short threadInfo_enqueue(const p_threadInfo tq, const void *data){
 void *threadInfo_dequeue(const p_threadInfo tq){
 	return threadQueue_dequeue(tq->queue);
 }
+
+// Thread vectors
+
+p_threadVector threadVector_init(){
+	p_threadVector tv = malloc(sizeof(threadVector));
+	if(!tv)
+		return NULL;
+
+	tv->mutex = NULL;
+	tv->mutex = malloc(sizeof(pthread_mutex_t));
+
+	if(!tv->mutex){
+		free(tv);
+		tv = NULL;
+		return NULL;
+	}
+
+	if(pthread_mutex_init(tv->mutex, NULL) != 0){
+		free(tv);
+		tv = NULL;
+		return NULL;
+	}
+
+	tv->_internalVect = vvector_init();
+	if(!tv->_internalVect){
+		pthread_mutex_destroy(tv->mutex);
+		free(tv->mutex);
+		free(tv);
+		tv = NULL;
+		return NULL;
+	}
+
+	return tv;
+}
+
+void threadVector_free(p_threadVector tv){
+	pthread_mutex_destroy(tv->mutex);
+	free(tv->mutex);
+	tv->mutex = NULL;
+	vvector_free(tv->_internalVect);
+	tv->_internalVect = NULL;
+	free(tv);
+	tv = NULL;
+}
+
+short threadVector_push(const p_threadVector tv, const void *data){
+	pthread_mutex_lock(tv->mutex);
+	short ret = vvector_push(tv->_internalVect, data);
+	pthread_mutex_unlock(tv->mutex);
+	return ret;
+}
+
+void *threadVector_pop(const p_threadVector tv){
+	pthread_mutex_lock(tv->mutex);
+	void *data = vvector_pop(tv->_internalVect);
+	pthread_mutex_unlock(tv->mutex);
+	return data;
+}
+
+void *threadVector_at(const p_threadVector tv, const size_t i){
+	void *data = NULL;
+	pthread_mutex_lock(tv->mutex);
+	data = vvector_at(tv->_internalVect, i);
+	pthread_mutex_unlock(tv->mutex);
+	return data;
+}

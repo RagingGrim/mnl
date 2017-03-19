@@ -15,6 +15,12 @@
 #define THREAD_SIGNAL_READY 0
 
 // STRUCTURES
+typedef struct threadVVector{
+	p_vvector _internalVect;
+	pthread_mutex_t *mutex;
+}threadVector, *p_threadVector;
+
+
 typedef struct threadQueue{
 	p_circularList queue;
 	pthread_mutex_t *mutex;
@@ -54,4 +60,11 @@ void threadInfo_free_no_queue(p_threadInfo ti);
 short threadInfo_enqueue(const p_threadInfo tq, const void *data);
 void *threadInfo_dequeue(const p_threadInfo tq);
 
+
+// FUNCTIONS (THREAD VECTORS)
+p_threadVector threadVector_init();
+void threadVector_free(p_threadVector tv);
+short threadVector_push(const p_threadVector tv, const void *data);
+void *threadVector_pop(const p_threadVector tv);
+void *threadVector_at(const p_threadVector tv, const size_t i);
 #endif		//TODO: Implement an advanced pushback function to set the stack size.
