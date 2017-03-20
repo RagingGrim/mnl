@@ -89,10 +89,11 @@ void *vvector_delete(const p_vvector vector ,const size_t i){
 	if( i == vector->elements )
 		return vvector_pop(vector);
 
-	for(size_t j = i ; i < vector->elements ; j++)
-		vector->data[i] = vector->data[i+1];
+	void *data = vector->data[i];
+
+	for(size_t j = i ; j < vector->elements ; j++)
+		vector->data[j] = vector->data[j+1];
 
 	vector->elements--;
-	void *data = vector->data[i];
 	return data;
 }
