@@ -291,3 +291,17 @@ void *threadVector_at(const p_threadVector tv, const size_t i){
 	pthread_mutex_unlock(tv->mutex);
 	return data;
 }
+
+size_t threadVector_getSize(const p_threadVector tv){
+	pthread_mutex_lock(tv->mutex);
+	size_t data = tv->_internalVect->elements;
+	pthread_mutex_unlock(tv->mutex);
+	return data;
+}
+
+void *threadVector_delete(const p_threadVector tv ,const size_t i){
+	pthread_mutex_lock(tv->mutex);
+	void *data = vvector_delete(tv->_internalVect, i);
+	pthread_mutex_unlock(tv->mutex);
+	return data;
+}

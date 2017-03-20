@@ -81,3 +81,18 @@ void *vvector_pop_bottom(const p_vvector vector){
 
 	return pnter;
 }
+
+void *vvector_delete(const p_vvector vector ,const size_t i){
+	if( vector->elements < i )
+		return NULL;
+
+	if( i == vector->elements )
+		return vvector_pop(vector);
+
+	for(size_t j = i ; i < vector->elements ; j++)
+		vector->data[i] = vector->data[i+1];
+
+	vector->elements--;
+	void *data = vector->data[i];
+	return data;
+}

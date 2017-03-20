@@ -84,7 +84,7 @@ char *chttp_lookup(const p_custom_http chttp, const char *key){
 }
 
 const short chttp_finalise(const p_custom_http chttp , const char *data, const size_t size){
-	unsigned int nDigits = ceil(log10(size));
+	unsigned int nDigits = floor(log10(size)) + 1;
 
 
 	char *buffer = malloc(17 + nDigits);
