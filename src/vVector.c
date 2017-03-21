@@ -97,3 +97,11 @@ void *vvector_delete(const p_vvector vector ,const size_t i){
 	vector->elements--;
 	return data;
 }
+
+void *vvector_set(const p_vvector vector, void *p, const size_t i){
+	void *data = vvector_at(vector, i);
+	if(!data)
+		return NULL;
+	vector->data[i] = p;
+	return data;
+}

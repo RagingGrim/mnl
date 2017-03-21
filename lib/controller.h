@@ -69,5 +69,7 @@ void *threadVector_pop(const p_threadVector tv);
 void *threadVector_at(const p_threadVector tv, const size_t i);
 size_t threadVector_getSize(const p_threadVector tv);
 void *threadVector_delete(const p_threadVector tv ,const size_t i);
+void *threadVector_set(const p_threadVector tv, void *p, const size_t i);
+
 
 #endif		//TODO: Implement an advanced pushback function to set the stack size.

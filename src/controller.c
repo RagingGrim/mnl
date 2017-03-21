@@ -305,3 +305,10 @@ void *threadVector_delete(const p_threadVector tv ,const size_t i){
 	pthread_mutex_unlock(tv->mutex);
 	return data;
 }
+
+void *threadVector_set(const p_threadVector tv, void *p, const size_t i){
+	pthread_mutex_lock(tv->mutex);
+	void *data = vvector_set(tv->_internalVect, p, i);
+	pthread_mutex_unlock(tv->mutex);
+	return data;
+}

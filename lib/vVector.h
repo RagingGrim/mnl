@@ -28,7 +28,7 @@ short vvector_push(const p_vvector vector, const void *element);
 void *vvector_pop(const p_vvector vector);
 void *vvector_pop_bottom(const p_vvector vector);
 void *vvector_at(const p_vvector vector, const size_t i);
-void *vvector_set(const p_vvector vector, const size_t i);
+void *vvector_set(const p_vvector vector, void *p, const size_t i);
 void *vvector_delete(const p_vvector vector ,const size_t i);
 
 
