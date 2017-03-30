@@ -9,7 +9,6 @@ mnl: mnl_compile mnl_generate_headers
 
 mnl_compile:
 	@echo "Compiling . . ."
-	$(CC) -c src/buffer.c -o build/buffer.o
 	$(CC) -c src/controller.c -o build/controller.o
 	$(CC) -c src/debug.c -o build/debug.o
 	$(CC) -c src/logger.c -o build/logger.o
@@ -24,7 +23,6 @@ mnl_generate_headers:
 	@touch build/mnl.h
 	@printf "#ifndef MNL_H_GUARD\n#define MNL_H_GUARD\n" > build/mnl.h
 	# Can't use * because the order in which the header is printed matters
-	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/buffer.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/vVector.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/circularList.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/debug.h >> build/mnl.h
