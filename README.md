@@ -34,3 +34,6 @@ To clean up memory used by the controller:
 ```C
 	threadController_destroy(tc);
 ```
+
+Planned Features:
+- Add a structure which makes loading plugins as so files easier.
