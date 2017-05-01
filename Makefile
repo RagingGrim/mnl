@@ -17,6 +17,7 @@ mnl_compile:
 	$(CC) -c src/circularList.c -o build/circularList.o
 	$(CC) -c src/chttp.c -o build/chttp.o
 	$(CC) -c src/map.c -o build/map.o
+	$(CC) -c src/llist.c -o build/llist.o	
 
 mnl_generate_headers:
 	@echo "Generating header . . . "
@@ -31,7 +32,7 @@ mnl_generate_headers:
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/controller.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/chttp.h >> build/mnl.h
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/map.h >> build/mnl.h
-
+	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/llist.h >> build/mnl.h
 	@printf "#endif\n" >> build/mnl.h
 
 mnl_debug:
