@@ -61,18 +61,23 @@ basic_map *mapCreate_fromParams(const int argc ,const char **argv){ // TODO: Thi
 	// Any option which does not directly map to state is mapped to (NULL)
 
 	for(size_t i = 1 ; i < argc ; i++){
+
 		if(argv[i][0] == '-'){
 			if(i + 1 < argc){
+
 				if(argv[i+1][0] != '-'){
 					mapAdd(map, argv[i], argv[i+1]);
-				}
-				else{
+				} else {
 					mapAdd(map, argv[i], "(null)");
-					i--;
 				}
+
+			} else {
+				// The last paramater is a flag
+				mapAdd(map, argv[i], "(null)");
 			}
 		}
 	}
+
 	return map;
 }
 

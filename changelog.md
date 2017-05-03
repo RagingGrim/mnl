@@ -1,3 +1,10 @@
-# Changelog:
-* Removed buffers implementation; They are nice but realloc really isn't that hard to use.
-* Finalised const tags closing issue #1 
+# Change Log
+
+## 2017-05-03
+### map.c
+#### Added
+- Paramaters without values are now supported
+
+### Makefile
+#### Added
+- Now creates the "build" directory if it does not exist

@@ -5,9 +5,23 @@ FLAGS=-O2 -fPIC -c
 
 mnl: mnl_generate_headers
 	clang -fPIC src/*.c -shared -o build/mnl.so
-	@echo "Dynamic library built."
+	@echo "Static library built."
+
+mnl_compile:
+	@echo "Compiling . . ."
+	if [ ! -d "build" ]; then mkdir "build"; fi
+	$(CC) $(FLAGS) src/controller.c -o build/controller.o
+	$(CC) $(FLAGS) src/debug.c -o build/debug.o
+	$(CC) $(FLAGS) src/logger.c -o build/logger.o
+	$(CC) $(FLAGS) src/networking.c -o build/networking.o
+	$(CC) $(FLAGS) src/vVector.c -o build/vVector.o
+	$(CC) $(FLAGS) src/circularList.c -o build/circularList.o
+	$(CC) $(FLAGS) src/chttp.c -o build/chttp.o
+	$(CC) $(FLAGS) src/map.c -o build/map.o
+	$(CC) $(FLAGS) src/llist.c -o build/llist.o
 
 mnl_generate_headers:
+	if [ ! -d "build" ]; then mkdir "build"; fi
 	@echo "Generating header . . . "
 	@touch build/mnl.h
 	@printf "#ifndef MNL_H_GUARD\n#define MNL_H_GUARD\n" > build/mnl.h
@@ -28,5 +42,4 @@ mnl_debug:
 
 
 package: mnl
-	tar -czvf ./build/mnl.tar.gz ./build/mnl.h ./build/mnl.so
-	
+	tar -czvf ./build/mnl.tar.gz ./build/mnl.h ./build/mnl.a
