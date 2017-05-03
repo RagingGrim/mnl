@@ -1,4 +1,6 @@
 *.out
 mnl.log
 *.o
+*.so
 test.c
+build/*
