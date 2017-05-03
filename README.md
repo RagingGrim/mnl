@@ -5,8 +5,14 @@ mnl ( multithreaded-networking-library ) is a tool to rapidly develop applicatio
 
 To use the code run make inside of mnl. It will generate a mnl.a file which you can copy to your project directory. To compile simply do
 
+## Static Linking:
 ```bash
-gcc main.c mnl.a
+$(CC) main.c mnl.a
+```
+
+## Dynamic Linking:
+```bash
+$(CC) main.c -lmnl
 ```
 
 I will manually generate the single header for the library everytime.
