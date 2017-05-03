@@ -1,1 +1,0 @@
-Ensures the directory is already created when make is run.
