@@ -10,7 +10,7 @@ default: dynamic
 dynamic: gen_headers
 	$(CC) $(OPT_FLAGS) $(DYNAMIC_FLAGS) src/*.c -o build/mnl.so
 
-static: gen_headers
+static: gen_headers 
 	$(CC) $(FLAGS) src/controller.c -o build/controller.o
 	$(CC) $(FLAGS) src/debug.c -o build/debug.o
 	$(CC) $(FLAGS) src/logger.c -o build/logger.o
@@ -21,7 +21,6 @@ static: gen_headers
 	$(CC) $(FLAGS) src/map.c -o build/map.o
 	$(CC) $(FLAGS) src/llist.c -o build/llist.o
 	ar rcs build/mnl.a build/*.o
-	@rm build/*.o
 	@echo "Static build finished"
 
 
@@ -41,9 +40,11 @@ gen_headers:
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/llist.h >> build/mnl.h
 	@printf "#endif\n" >> build/mnl.h
 
-package: dynamic static
-	tar -czvf ./build/mnl.tar.gz -C ./build .
-	@rm -f ./build/*.o
-	@rm -f ./build/*.a
-	@rm -f ./build/*.so
-	@rm -f ./build/*.h
+package: static dynamic 
+	cd ./build && tar -czvf mnl.tar.gz *.a *.so *.h
+	@mv ./build/mnl.tar.gz ../
+	@$(MAKE) clean
+	@mv ../mnl.tar.gz ./build/
+	@echo "Package generated."
+clean:
+	@rm -f ./build/*
