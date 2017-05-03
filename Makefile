@@ -1,23 +1,23 @@
 CC=clang
 STD=c11
-FLAGS=-02
+L_FLAGS=-O2 -shared
+FLAGS=-O2 -fPIC -c
 
-mnl: mnl_compile mnl_generate_headers
-	ar -rcs build/mnl.a build/*.o
-	@rm build/*.o
+mnl: mnl_generate_headers
+	clang -fPIC src/*.c -shared -o build/mnl.so
 	@echo "Static library built."
 
 mnl_compile:
 	@echo "Compiling . . ."
-	$(CC) -c src/controller.c -o build/controller.o
-	$(CC) -c src/debug.c -o build/debug.o
-	$(CC) -c src/logger.c -o build/logger.o
-	$(CC) -c src/networking.c -o build/networking.o
-	$(CC) -c src/vVector.c -o build/vVector.o
-	$(CC) -c src/circularList.c -o build/circularList.o
-	$(CC) -c src/chttp.c -o build/chttp.o
-	$(CC) -c src/map.c -o build/map.o
-	$(CC) -c src/llist.c -o build/llist.o	
+	$(CC) $(FLAGS) src/controller.c -o build/controller.o
+	$(CC) $(FLAGS) src/debug.c -o build/debug.o
+	$(CC) $(FLAGS) src/logger.c -o build/logger.o
+	$(CC) $(FLAGS) src/networking.c -o build/networking.o
+	$(CC) $(FLAGS) src/vVector.c -o build/vVector.o
+	$(CC) $(FLAGS) src/circularList.c -o build/circularList.o
+	$(CC) $(FLAGS) src/chttp.c -o build/chttp.o
+	$(CC) $(FLAGS) src/map.c -o build/map.o
+	$(CC) $(FLAGS) src/llist.c -o build/llist.o	
 
 mnl_generate_headers:
 	@echo "Generating header . . . "

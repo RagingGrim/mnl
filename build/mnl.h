@@ -166,7 +166,7 @@ typedef struct threadInfo{
 }threadInfo, *p_threadInfo;
 
 // FUNCTIONS (THREAD CONTROLLER)
-threadController *threadController_init();
+extern threadController *threadController_init();
 void threadController_destroy(threadController *tc);
 short threadController_messsage(const threadController *tc, const size_t at, void *msg);
 short threadController_pushback(const threadController *tc,void *(* routine)(void *), void *data);
