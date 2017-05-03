@@ -9,5 +9,5 @@ extern "C"{
  */
 
 int main(){
-
-}}
+	p_threadController tc = threadController_init();
+}
