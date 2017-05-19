@@ -1,11 +1,10 @@
 #include "../lib/llist.h"
-#include <stdio.h> //TODO: Remove me
 // Nodes
 p_node node_init(const void *data){
 	p_node n = malloc(sizeof(node));
 	if(!n)
 		return NULL;
-	
+
 	n->data = (void *)data;
 	return n;
 }
@@ -35,14 +34,14 @@ short llist_push( const p_llist l, const p_node n ){
 		l->size++;
 		return LLIST_EOK;
 	}
-	
+
 	p_node current = l->root;
 	if(!current){
 		l->root = n;
 		l->size++;
-		return LLIST_EOK; 
+		return LLIST_EOK;
 	}
-	
+
 	while(current->next != NULL)
 		current = current->next;
 
@@ -63,7 +62,7 @@ short llist_push_adv( const p_llist l, const void *data ){
 p_node llist_pop( const p_llist l ){
 	if(l->root == NULL)
 		return NULL;
-	
+
 	if(l->root->next == NULL){
 		p_node tmp = l->root;
 		l->root = NULL;
@@ -77,14 +76,14 @@ p_node llist_pop( const p_llist l ){
 		previous = current;
 		current = current->next;
 	}
-	
+
 	previous->next = NULL;
 	l->size--;
 	return current;
 }
 
 void llist_free( p_llist l ){
-	
+
 	while(l->size != 0){
 		p_node n = llist_pop(l);
 		if(n)

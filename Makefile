@@ -2,15 +2,16 @@ CC=clang
 DYNAMIC_FLAGS=-fPIC -shared
 OPT_FLAGS=-O3
 FLAGS=$(OPT_FLAGS) -fPIC -c
+TEST_FLAGS=-ggdb -O0
 STD=c11
 
-default: dynamic 
+default: dynamic
 	@echo "Dynamic build finished"
 
 dynamic: gen_headers
 	$(CC) $(OPT_FLAGS) $(DYNAMIC_FLAGS) src/*.c -o build/mnl.so
 
-static: gen_headers 
+static: gen_headers
 	$(CC) $(FLAGS) src/controller.c -o build/controller.o
 	$(CC) $(FLAGS) src/debug.c -o build/debug.o
 	$(CC) $(FLAGS) src/logger.c -o build/logger.o
@@ -40,11 +41,19 @@ gen_headers:
 	grep -v '//<<MARK IGNORE>>'  --no-filename  lib/llist.h >> build/mnl.h
 	@printf "#endif\n" >> build/mnl.h
 
-package: static dynamic 
+package: static dynamic
 	cd ./build && tar -czvf mnl.tar.gz *.a *.so *.h
 	@mv ./build/mnl.tar.gz ../
 	@$(MAKE) clean
 	@mv ../mnl.tar.gz ./build/
 	@echo "Package generated."
+
+test: static
+	$(CC) $(TEST_FLAGS) tests/allTests.c build/mnl.a -o tests/test.o
+	@clear
+	valgrind  --track-origins=yes ./tests/test.o
+	@echo "All tests passed."
+
+
 clean:
 	@rm -f ./build/*
