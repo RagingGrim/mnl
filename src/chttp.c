@@ -39,7 +39,10 @@ const short chttp_add_resp(const p_custom_http chttp, const char *resp){
 	if( err != CHTTPE_OK )
 		return CHTTPE_GROW;
 
-	memcpy(chttp->buffer + oldSize, resp, strlen(resp));
+	size_t size = strlen(resp);
+	memcpy(chttp->buffer + oldSize, resp, size);
+	memcpy(chttp->buffer + oldSize + size, "\r\n", 2);
+
 	return CHTTPE_OK;
 }
 
