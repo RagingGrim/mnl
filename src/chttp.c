@@ -33,6 +33,16 @@ const short chttp_add_header(p_custom_http chttp, const char *data, const size_t
 	return CHTTPE_OK;
 }
 
+const short chttp_add_resp(const p_custom_http chttp, const char *resp){
+	size_t oldSize = chttp->size;
+	short err = chttp_grow(chttp, strlen(resp) + 2);
+	if( err != CHTTPE_OK )
+		return CHTTPE_GROW;
+
+	memcpy(chttp->buffer + oldSize, resp, strlen(resp));
+	return CHTTPE_OK;
+}
+
 const short chttp_add(p_custom_http chttp, const char *data, const size_t size){
 	size_t oldSize = chttp->size;
 	short err = chttp_grow(chttp, size);
